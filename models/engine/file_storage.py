@@ -16,15 +16,28 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def all(self):
+    # Include the 'User' class in the list of allowed classes
+    allowed_classes = [
+        'BaseModel',
+        'User',
+        # Add other classes here if necessary
+    ]
+
+    def all(self, cls=None):
         """
-        Returns the dictionary of all objects.
+        Returns a dictionary of objects, optionally filtered by class.
+
+        Args:
+            cls (str, optional): The class name to filter by. If None, returns all objects.
 
         Returns:
-            dict: A dictionary of all objects in the format
-                    {'class_name.id': instance}.
+            dict: A dictionary of objects, filtered by class if cls is provided.
         """
-        return self.__objects
+        if cls is None:
+            return self.__objects
+        else:
+            filtered_objects = {key: value for key, value in self.__objects.items() if cls == key.split('.')[0]}
+            return filtered_objects
 
     def new(self, obj):
         """
@@ -33,16 +46,14 @@ class FileStorage:
         Args:
             obj: The object to add.
         """
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
+        key = "{}.{}".format(obj._class.name_, obj.id)
         self.__objects[key] = obj
 
     def save(self):
         """
-        Serializes __objects to the JSON file (__file_path).
+        Serializes _objects to the JSON file (_file_path).
         """
-        serialized_data = {
-                key: obj.to_dict() for key, obj in self.__objects.items()
-                }
+        serialized_data = {key: obj.to_dict() for key, obj in self.__objects.items()}
         with open(self.__file_path, 'w') as file:
             json.dump(serialized_data, file)
 
