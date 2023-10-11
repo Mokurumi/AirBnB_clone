@@ -6,6 +6,7 @@ It manages the 'id' attribute for objects and ensures unique IDs are assigned.
 
 import uuid
 from datetime import datetime
+from models import storage
 
 
 class BaseModel:
@@ -20,14 +21,17 @@ class BaseModel:
 
         Args:
             *args: Unused.
-            **kwargs: A dictionary containing attribute names and their corresponding values.
+            **kwargs: A dictionary containing attribute names
+                          and their corresponding values.
 
         If kwargs is not empty:
             - Each key in kwargs is treated as an attribute name.
             - Each value in kwargs is the value of the corresponding attribute.
-            - 'created_at' and 'updated_at' attributes are converted from ISO-formatted strings to datetime objects.
+            - 'created_at' and 'updated_at' attributes are converted
+                  from ISO-formatted strings to datetime objects.
         Otherwise:
-            - Generates a unique ID and sets the 'created_at' timestamp to the current datetime.
+            - Generates a unique ID and sets the 'created_at' timestamp
+                to the current datetime.
 
         Example:
             instance_dict = {
@@ -43,7 +47,9 @@ class BaseModel:
                 if key != '_class_':
                     if key in ['created_at', 'updated_at']:
                         # Convert ISO-formatted string to datetime object
-                        value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
+                        value = datetime.strptime(
+                                value, '%Y-%m-%dT%H:%M:%S.%f'
+                                )
                     setattr(self, key, value)
             if 'created_at' not in kwargs:
                 self.created_at = datetime.now()
@@ -68,17 +74,20 @@ class BaseModel:
 
     def save(self):
         """
-        Updates the 'updated_at' attribute with the current datetime.
+        Updates the 'updated_at' attribute with the current datetime
+            and calls save() on storage.
         """
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """
         Returns a dictionary representation of the object.
 
         Returns:
-            dict: A dictionary containing all attributes of the instance, including class name,
-                  'created_at', and 'updated_at' in ISO format.
+            dict: A dictionary containing all attributes of the instance,
+                      including class name, 'created_at',
+                      and 'updated_at' in ISO format.
         """
         data = self._dict_.copy()
         data['_class'] = self.class.name_
