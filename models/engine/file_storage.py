@@ -55,12 +55,12 @@ class FileStorage:
         Args:
             obj: The object to add.
         """
-        key = "{}.{}".format(obj._class.name_, obj.id)
+        key = "{}.{}".format(obj.__class__.__name__, obj.id)
         self.__objects[key] = obj
 
     def save(self):
         """
-        Serializes _objects to the JSON file (_file_path).
+        Serializes __objects to the JSON file (__file_path).
         """
         serialized_data = {
                 key: obj.to_dict() for key, obj in self.__objects.items()
