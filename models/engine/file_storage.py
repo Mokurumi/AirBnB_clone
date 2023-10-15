@@ -16,10 +16,15 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    # Include the 'User' class in the list of allowed classes
+    # Include the new classes in the list of allowed classes
     allowed_classes = [
         'BaseModel',
         'User',
+        'State',
+        'City',
+        'Amenity',
+        'Place',
+        'Review',
         # Add other classes here if necessary
     ]
 
@@ -29,7 +34,7 @@ class FileStorage:
 
         Args:
             cls (str, optional): The class name to filter by.
-                                     If None, returns all objects.
+                                    If None, returns all objects.
 
         Returns:
             dict: A dictionary of objects, filtered by class if cls is provided.
