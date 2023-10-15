@@ -37,7 +37,7 @@ class FileStorage:
                                     If None, returns all objects.
 
         Returns:
-            dict: A dictionary of objects, filtered by class if cls is provided.
+            dict: A dictionary of objects, filtered by class if cls is provided
         """
         if cls is None:
             return self.__objects

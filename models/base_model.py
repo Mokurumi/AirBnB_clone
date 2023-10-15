@@ -11,86 +11,95 @@ from models import storage
 
 class BaseModel:
     """
-    This is a base class that defines common attributes
-        and methods for other classes.
+    This is the base class for all model objects in the application.
+        It provides common attributes and methods.
+
+    Attributes:
+        id (str): A unique identifier for the object.
+        created_at: The date and time when the object is created.
+        updated_at: The date and time when the object is last updated.
+
+    Methods:
+        __init__(self, *args, **kwargs):
+            Initializes a new BaseModel instance.
+            If keyword arguments are provided,
+                it populates the instance attributes with the provided values.
+            If no arguments are provided,
+                it generates a new ID and timestamps for the instance.
+
+        __str__(self):
+            Returns a string representation of the object in the format:
+                "[<class name>] (<self.id>) <self.__dict__>".
+
+        save(self):
+            Updates the 'updated_at' attribute with the current datetime and
+                saves the object to the storage.
+
+        to_dict(self):
+            Returns a dictionary representation of the object,
+                including class name and timestamps.
     """
 
-    def _init_(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
-        Initializes a new instance of the BaseModel class.
+        Initializes a new BaseModel instance.
 
         Args:
-            *args: Unused.
-            **kwargs: A dictionary containing attribute names
-                          and their corresponding values.
+            *args: Not used in this implementation.
+            **kwargs: Keyword arguments for populating object attributes.
+                If 'created_at' or 'updated_at' is provided,
+                    it converts them to datetime objects.
 
-        If kwargs is not empty:
-            - Each key in kwargs is treated as an attribute name.
-            - Each value in kwargs is the value of the corresponding attribute.
-            - 'created_at' and 'updated_at' attributes are converted
-                  from ISO-formatted strings to datetime objects.
-        Otherwise:
-            - Generates a unique ID and sets the 'created_at' timestamp
-                to the current datetime.
-
-        Example:
-            instance_dict = {
-                '_class_': 'MyClass',
-                'id': 'some_id',
-                'created_at': '2023-10-11T12:34:56.789012',
-                'my_attribute': 'some_value'
-            }
-            my_instance = MyClass(**instance_dict)
+        If keyword arguments are provided,
+            it populates the instance attributes with the provided values.
+        If no arguments are provided,
+            it generates a new ID and timestamps for the instance.
         """
         if kwargs:
             for key, value in kwargs.items():
-                if key != '_class_':
-                    if key in ['created_at', 'updated_at']:
-                        # Convert ISO-formatted string to datetime object
-                        value = datetime.strptime(
-                                value, '%Y-%m-%dT%H:%M:%S.%f'
-                                )
+                if key == "__class__":
+                    continue
+                if key in ["created_at", "updated_at"]:
+                    setattr(self, key, datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f"))
+                else:
                     setattr(self, key, value)
-            if 'created_at' not in kwargs:
-                self.created_at = datetime.now()
-            if 'updated_at' not in kwargs:
-                self.updated_at = datetime.now()
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = self.created_at
+            # For new instances, add them to the storage
+            storage.new(self)  # Add this line
 
-    def _str_(self):
+    def __str__(self):
         """
         Returns a string representation of the object.
 
         Returns:
-            str: A string in the format
-                '[<class name>] (<self.id>) <self._dict_>'.
+            str: A formatted string with the class name, id,
+                and instance attributes.
         """
         return "[{}] ({}) {}".format(
-                self._class.name, self.id, self.dict_
+                self.__class__.__name__, self.id, self.__dict__
                 )
 
     def save(self):
         """
         Updates the 'updated_at' attribute with the current datetime
-            and calls save() on storage.
+            and saves the object to the storage.
         """
         self.updated_at = datetime.now()
         storage.save()
 
     def to_dict(self):
         """
-        Returns a dictionary representation of the object.
+        Returns a dictionary representation of the object,
+            including class name and timestamps.
 
         Returns:
-            dict: A dictionary containing all attributes of the instance,
-                      including class name, 'created_at',
-                      and 'updated_at' in ISO format.
+            dict: A dictionary containing all attributes of the instance.
         """
-        data = self._dict_.copy()
-        data['_class'] = self.class.name_
-        data['created_at'] = self.created_at.isoformat()
-        data['updated_at'] = self.updated_at.isoformat()
-        return data
+        obj_dict = self.__dict__.copy()
+        obj_dict["__class__"] = self.__class__.__name__
+        obj_dict["created_at"] = self.created_at.isoformat()
+        obj_dict["updated_at"] = self.updated_at.isoformat()
+        return obj_dict
