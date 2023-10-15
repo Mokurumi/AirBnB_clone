@@ -28,7 +28,8 @@ class FileStorage:
         Returns a dictionary of objects, optionally filtered by class.
 
         Args:
-            cls (str, optional): The class name to filter by. If None, returns all objects.
+            cls (str, optional): The class name to filter by.
+                                     If None, returns all objects.
 
         Returns:
             dict: A dictionary of objects, filtered by class if cls is provided.
@@ -36,7 +37,10 @@ class FileStorage:
         if cls is None:
             return self.__objects
         else:
-            filtered_objects = {key: value for key, value in self.__objects.items() if cls == key.split('.')[0]}
+            filtered_objects = {
+                    key: value for key,
+                    value in self.__objects.items() if cls == key.split('.')[0]
+                    }
             return filtered_objects
 
     def new(self, obj):
@@ -53,7 +57,9 @@ class FileStorage:
         """
         Serializes _objects to the JSON file (_file_path).
         """
-        serialized_data = {key: obj.to_dict() for key, obj in self.__objects.items()}
+        serialized_data = {
+                key: obj.to_dict() for key, obj in self.__objects.items()
+                }
         with open(self.__file_path, 'w') as file:
             json.dump(serialized_data, file)
 

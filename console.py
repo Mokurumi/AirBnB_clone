@@ -75,7 +75,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, arg):
         """
-        Shows all instances of a class or all instances if no class name is specified.
+        Shows all instances of a class or
+            all instances if no class name is specified.
         Usage: all [class_name]
         """
         class_name = arg if arg else None
@@ -149,7 +150,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy_user(self, arg):
         """
-        Deletes a User instance based on its ID (saves the change to the JSON file).
+        Deletes a User instance based on its ID
+            (saves the change to the JSON file).
         Usage: destroy User <id>
         """
         args = arg.split()
