@@ -24,15 +24,12 @@ class HBNBCommand(cmd.Cmd):
         if not arg:
             print("** class name missing **")
         else:
-            class_name = args[0]
             try:
-                for obj in storage.all().values():
-                    if obj.__class__.__name__ == class_name:
-                        obj_list.append(str(obj))
-            except KeyError:
+                new_instance = eval(arg)()
+                new_instance.save()
+                print(new_instance.id)
+            except NameError:
                 print("** class doesn't exist **")
-                return
-        print(obj_list)
 
     def do_show(self, arg):
         """
