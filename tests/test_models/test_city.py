@@ -1,34 +1,36 @@
 #!/usr/bin/python3
 """
-This module describes tests for the user model class
+This module describes tests for the city model class
 """
 
 
 import unittest
 from models.user import User
 
-class TestUser(unittest.TestCase):
-    def test_user_attributes(self):
-        """
-        Test if User class attributes are correctly initialized.
-        """
-        user = User()
 
-        # Check if user attributes are correctly initialized
-        self.assertEqual(user.email, "")
-        self.assertEqual(user.password, "")
-        self.assertEqual(user.first_name, "")
-        self.assertEqual(user.last_name, "")
-
-    def test_user_inheritance(self):
+class TestCity(unittest.TestCase):
+    '''
+    this class tests the City class
+    '''
+    def test_city_attributes(self):
         """
-        Test if User class properly inherits from BaseModel.
+        Test if City class attributes are correctly initialized.
         """
-        user = User()
+        city = City()
 
-        # Check if User class inherits from BaseModel
-        self.assertTrue(issubclass(User, BaseModel))
-        self.assertIsInstance(user, User)
+        # Check if city attributes are correctly initialized
+        self.assertEqual(city.state_id, "")
+        self.assertEqual(city.name, "")
+
+    def test_city_inheritance(self):
+        """
+        Test if City class properly inherits from BaseModel.
+        """
+        city = City()
+
+        # Check if City class inherits from BaseModel
+        self.assertTrue(issubclass(City, BaseModel))
+        self.assertIsInstance(city, City)
 
 
 if __name__ == '__main__':

@@ -1,34 +1,45 @@
 #!/usr/bin/python3
 """
-This module describes tests for the user model class
+This module describes tests for the place model class
 """
 
 
 import unittest
-from models.user import User
+from models.place import Place
 
-class TestUser(unittest.TestCase):
-    def test_user_attributes(self):
-        """
-        Test if User class attributes are correctly initialized.
-        """
-        user = User()
 
-        # Check if user attributes are correctly initialized
-        self.assertEqual(user.email, "")
-        self.assertEqual(user.password, "")
-        self.assertEqual(user.first_name, "")
-        self.assertEqual(user.last_name, "")
-
-    def test_user_inheritance(self):
+class TestPlace(unittest.TestCase):
+    '''
+    this class tests the Place class functionality
+    '''
+    def test_place_attributes(self):
         """
-        Test if User class properly inherits from BaseModel.
+        Test if Place class attributes are correctly initialized.
         """
-        user = User()
+        place = Place()
 
-        # Check if User class inherits from BaseModel
-        self.assertTrue(issubclass(User, BaseModel))
-        self.assertIsInstance(user, User)
+        # Check if place attributes are correctly initialized
+        self.assertEqual(place.city_id, "")
+        self.assertEqual(place.user_id, "")
+        self.assertEqual(place.name, "")
+        self.assertEqual(place.description, "")
+        self.assertEqual(place.number_rooms, 0)
+        self.assertEqual(place.number_bathrooms, 0)
+        self.assertEqual(place.max_guest, 0)
+        self.assertEqual(place.price_by_night, 0)
+        self.assertEqual(place.latitude, 0.0)
+        self.assertEqual(place.longitude, 0.0)
+        self.assertEqual(place.amenity_ids, [])
+
+    def test_place_inheritance(self):
+        """
+        Test if Place class properly inherits from BaseModel.
+        """
+        place = Place()
+
+        # Check if Place class inherits from BaseModel
+        self.assertTrue(issubclass(Place, BaseModel))
+        self.assertIsInstance(place, Place)
 
 
 if __name__ == '__main__':

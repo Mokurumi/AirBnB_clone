@@ -7,7 +7,11 @@ This module describes tests for the user model class
 import unittest
 from models.user import User
 
+
 class TestUser(unittest.TestCase):
+    """
+    This class tests the User class
+    """
     def test_user_attributes(self):
         """
         Test if User class attributes are correctly initialized.

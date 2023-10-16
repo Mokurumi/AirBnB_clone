@@ -5,30 +5,33 @@ This module describes tests for the user model class
 
 
 import unittest
-from models.user import User
+from models.review import Review
 
-class TestUser(unittest.TestCase):
-    def test_user_attributes(self):
-        """
-        Test if User class attributes are correctly initialized.
-        """
-        user = User()
 
-        # Check if user attributes are correctly initialized
-        self.assertEqual(user.email, "")
-        self.assertEqual(user.password, "")
-        self.assertEqual(user.first_name, "")
-        self.assertEqual(user.last_name, "")
-
-    def test_user_inheritance(self):
+class TestReview(unittest.TestCase):
+    '''
+    this class tests functionality of Review class
+    '''
+    def test_review_attributes(self):
         """
-        Test if User class properly inherits from BaseModel.
+        Test if Review class attributes are correctly initialized.
         """
-        user = User()
+        review = Review()
 
-        # Check if User class inherits from BaseModel
-        self.assertTrue(issubclass(User, BaseModel))
-        self.assertIsInstance(user, User)
+        # Check if review attributes are correctly initialized
+        self.assertEqual(review.place_id, "")
+        self.assertEqual(review.user_id, "")
+        self.assertEqual(review.text, "")
+
+    def test_review_inheritance(self):
+        """
+        Test if Review class properly inherits from BaseModel.
+        """
+        review = Review()
+
+        # Check if Review class inherits from BaseModel
+        self.assertTrue(issubclass(Review, BaseModel))
+        self.assertIsInstance(review, Review)
 
 
 if __name__ == '__main__':
