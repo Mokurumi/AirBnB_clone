@@ -10,10 +10,30 @@ import json
 import importlib
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
+from models.city import City
+from models.state import State
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
+    """
+    This is the entry point of the command interpretter
+    it has functions to process different commands
+    """
     prompt = "(hbnb) "
+    valid_class_names = ["BaseModel", "User", "City", "State", "Amenity", "Place", "Review"]
+
+    def check_valid_class(self, class_name):
+        """
+        Checks if class name provided is in the list
+        """
+        if class_name not in self.valid_class_names:
+            print("** class doesn't exist **")
+            return False
+        return True
 
     def do_create(self, arg):
         """
@@ -23,13 +43,13 @@ class HBNBCommand(cmd.Cmd):
         """
         if not arg:
             print("** class name missing **")
-        else:
-            try:
-                new_instance = eval(arg)()
-                new_instance.save()
-                print(new_instance.id)
-            except NameError:
-                print("** class doesn't exist **")
+            return
+        class_name = arg
+        if self.check_valid_class(class_name):
+            new_instance = eval(class_name)()
+            new_instance.save()
+            print(new_instance.id)
+
 
     def do_show(self, arg):
         """
@@ -39,13 +59,15 @@ class HBNBCommand(cmd.Cmd):
         args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
-        elif len(args) == 1:
+            return
+        if len(args) == 1:
             print("** instance id missing **")
-        else:
-            class_name = args[0]
-            obj_id = args[1]
+            return
+        class_name = args[0]
+        obj_id = args[1]
+        if self.check_valid_class(class_name):
             try:
-                obj = storage.all()[class_name + "." + obj_id]
+                obj = storage.all()[f"{class_name}.{obj_id}"]
                 print(obj)
             except KeyError:
                 print("** no instance found **")
@@ -56,20 +78,13 @@ class HBNBCommand(cmd.Cmd):
             (saves the change to the JSON file).
         Usage: <class_name>.destroy(<id>)
         """
-        args = arg.split()
-        if len(args) == 0:
+        if not arg:
             print("** class name missing **")
-        elif len(args) == 1:
-            print("** instance id missing **")
-        else:
-            class_name = args[0]
-            obj_id = args[1]
-            try:
-                obj = storage.all()[class_name + "." + obj_id]
-                del storage.all()[class_name + "." + obj_id]
-                storage.save()
-            except KeyError:
-                print("** no instance found **")
+            return
+        class_name = arg
+        if self.check_valid_class(class_name):
+            count = len([obj for obj in storage.all().values() if obj.__class__.__name__ == class_name])
+            print(count)
 
     def do_all(self, arg):
         """
@@ -102,25 +117,28 @@ class HBNBCommand(cmd.Cmd):
         args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
-        elif len(args) == 1:
+            return
+        if len(args) == 1:
             print("** instance id missing **")
-        else:
-            class_name = args[0]
-            obj_id = args[1]
+            return
+        class_name = args[0]
+        obj_id = args[1]
+        if self.check_valid_class(class_name):
             try:
-                obj = storage.all()[class_name + "." + obj_id]
+                obj = storage.all()[f"{class_name}.{obj_id}"]
                 if len(args) == 2:
                     print("** attribute name missing **")
-                elif len(args) == 3:
+                    return
+                if len(args) == 3:
                     print("** value missing **")
+                    return
+                attribute_name = args[2]
+                if args[3].startswith('"') and args[3].endswith('"'):
+                    attribute_value = args[3][1:-1]
                 else:
-                    attribute_name = args[2]
-                    if args[3].startswith('"') and args[3].endswith('"'):
-                        attribute_value = args[3][1:-1]
-                    else:
-                        attribute_value = args[3]
-                    setattr(obj, attribute_name, attribute_value)
-                    obj.save()
+                    attribute_value = args[3]
+                setattr(obj, attribute_name, attribute_value)
+                obj.save()
             except KeyError:
                 print("** no instance found **")
 
@@ -131,9 +149,7 @@ class HBNBCommand(cmd.Cmd):
         """
         try:
             class_name = arg.split()[0]
-            count = len([
-                obj for obj in storage.all().values() if obj.__class__.__name__ == class_name
-                ])
+            count = len([obj for obj in storage.all().values() if obj.__class__.__name__ == class_name])
             print(count)
         except KeyError:
             print("** class doesn't exist **")
