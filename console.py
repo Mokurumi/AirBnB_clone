@@ -73,7 +73,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, arg):
         """
-        Prints all string representations of all instances based or not on the class name.
+        Prints all string representations of all instances based or
+            not on the class name.
         Usage: all [class name]
         """
         args = arg.split()
@@ -114,7 +115,10 @@ class HBNBCommand(cmd.Cmd):
                     print("** value missing **")
                 else:
                     attribute_name = args[2]
-                    attribute_value = args[3][1:-1] if args[3].startswith('"') and args[3].endswith('"') else args[3]
+                    if args[3].startswith('"') and args[3].endswith('"'):
+                        attribute_value = args[3][1:-1]
+                    else:
+                        attribute_value = args[3]
                     setattr(obj, attribute_name, attribute_value)
                     obj.save()
             except KeyError:
