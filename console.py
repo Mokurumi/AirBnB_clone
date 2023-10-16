@@ -124,6 +124,20 @@ class HBNBCommand(cmd.Cmd):
             except KeyError:
                 print("** no instance found **")
 
+    def do_count(self, arg):
+        """
+        Retrieves the number of instances of a class.
+        Usage: <class_name>.count()
+        """
+        try:
+            class_name = arg.split()[0]
+            count = len([
+                obj for obj in storage.all().values() if obj.__class__.__name__ == class_name
+                ])
+            print(count)
+        except KeyError:
+            print("** class doesn't exist **")
+
     def emptyline(self):
         """
         Do nothing if the line is empty
