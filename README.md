@@ -22,6 +22,8 @@ This repository hosts a rich assortment of critical files and resources:
 | -------------- | --------------------- |
 |[AUTHORS](./AUTHORS) | Delve into the minds behind this project |
 |[base_model.py](./models/base_model.py) | Definition of the BaseModel class (the parent class) and its associated methods |
+|[tests](./tests) | Contains all unit tests |
+|[file_Storage.py](./models/engine/file_storage.py) | Definition of the file storage |
 |[user.py](./models/user.py) | Definition of the User subclass |
 
 ### Built with
