@@ -119,22 +119,21 @@ class HBNBCommand(cmd.Cmd):
         """
         args = arg.split()
         obj_list = []
-
-        if len(args) > 0:
+        if len(args) == 0:
+            for obj in storage.all().values():
+                obj_list.append(str(obj))
+        else:
             class_name = args[0]
             if class_name not in self.valid_class_names:
                 print("** class doesn't exist **")
                 return
-
-        try:
-            for obj in storage.all().values():
-                if len(args) == 0 or obj.__class__.__name__ == class_name:
-                    obj_list.append(str(obj))
-        except KeyError:
-            if len(args) == 0:
+            try:
+                for obj in storage.all().values():
+                    if obj.__class__.__name__ == class_name:
+                        obj_list.append(str(obj))
+            except KeyError:
                 print("** class doesn't exist **")
-            return
-
+                return
         print(obj_list)
 
     def do_update(self, arg):
