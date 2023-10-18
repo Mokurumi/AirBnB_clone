@@ -24,7 +24,15 @@ class HBNBCommand(cmd.Cmd):
     it has functions to process different commands
     """
     prompt = "(hbnb) "
-    valid_class_names = ["BaseModel", "User", "City", "State", "Amenity", "Place", "Review"]
+    valid_class_names = [
+            "BaseModel",
+            "User",
+            "City",
+            "State",
+            "Amenity",
+            "Place",
+            "Review"
+            ]
 
     def check_valid_class(self, class_name):
         """
@@ -78,13 +86,30 @@ class HBNBCommand(cmd.Cmd):
             (saves the change to the JSON file).
         Usage: <class_name>.destroy(<id>)
         """
-        if not arg:
+        args = arg.split()
+        if not args:
             print("** class name missing **")
             return
-        class_name = arg
-        if self.check_valid_class(class_name):
-            count = len([obj for obj in storage.all().values() if obj.__class__.__name__ == class_name])
-            print(count)
+        class_name = args[0]
+        if not self.check_valid_class(class_name):
+            print("** class doesn't exist **")
+            return
+
+        if len(args) < 2:
+            print("** instance id missing **")
+            return
+        obj_id = args[1]
+        
+        try:
+            key = f"{class_name}.{obj_id}"
+            if key in storage.all():
+                del storage.all()[key]
+                storage.save()
+            else:
+                print("** no instance found **")
+        except KeyError:
+            print("** no instance found **")
+
 
     def do_all(self, arg):
         """
@@ -99,6 +124,9 @@ class HBNBCommand(cmd.Cmd):
                 obj_list.append(str(obj))
         else:
             class_name = args[0]
+            if class_name not in self.valid_class_names:
+                print("** class doesn't exist **")
+                return
             try:
                 for obj in storage.all().values():
                     if obj.__class__.__name__ == class_name:
@@ -147,12 +175,14 @@ class HBNBCommand(cmd.Cmd):
         Retrieves the number of instances of a class.
         Usage: <class_name>.count()
         """
-        try:
-            class_name = arg.split()[0]
-            count = len([obj for obj in storage.all().values() if obj.__class__.__name__ == class_name])
+        args = arg.split()
+        if len(args) == 0:
+            print("** class name missing **")
+        else:
+            class_name = args[0]
+            count = sum(1 for obj in storage.all().values()
+                        if obj.__class__.__name__ == class_name)
             print(count)
-        except KeyError:
-            print("** class doesn't exist **")
 
     def emptyline(self):
         """
