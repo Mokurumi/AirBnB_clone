@@ -52,12 +52,13 @@ class HBNBCommand(cmd.Cmd):
         if not arg:
             print("** class name missing **")
         else:
-            try:
-                new_instance = eval(arg)()
+            class_name = arg.split()[0]
+            if class_name not in storage.classes():
+                print("** class doesn't exist **")
+            else:
+                new_instance = storage.classes()[class_name]()
                 new_instance.save()
                 print(new_instance.id)
-            except NameError:
-                print("** class doesn't exist **")
 
     def do_show(self, arg):
         """
@@ -117,24 +118,17 @@ class HBNBCommand(cmd.Cmd):
             not on the class name.
         Usage: all [class name]
         """
-        args = arg.split()
-        obj_list = []
-        if len(args) == 0:
-            for obj in storage.all().values():
-                obj_list.append(str(obj))
+        if arg != "":
+            new_args = arg.split(' ')
+            if new_args[0] not in storage.classes():
+                print("** class doesn't exist **")
+            else:
+                new_list = [str(obj) for key, obj in storage.all().values()
+                      if type(obj).__name__ == new_args[0]]
+                print(new_list)
         else:
-            class_name = args[0]
-            if class_name not in self.valid_class_names:
-                print("** class doesn't exist **")
-                return
-            try:
-                for obj in storage.all().values():
-                    if obj.__class__.__name__ == class_name:
-                        obj_list.append(str(obj))
-            except KeyError:
-                print("** class doesn't exist **")
-                return
-        print(obj_list)
+            new_list = [str(obj) for key, obj in storage.all().values()]
+            print(new_list)
 
     def do_update(self, arg):
         """
