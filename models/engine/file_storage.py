@@ -17,6 +17,25 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
+    def classes(self):
+        """Returns a dictionary of valid classes and their references"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
+
+        classes = {"BaseModel": BaseModel,
+                   "User": User,
+                   "State": State,
+                   "City": City,
+                   "Amenity": Amenity,
+                   "Place": Place,
+                   "Review": Review}
+        return classes
+
     def all(self):
         """Returns the dictionary of all stored objects."""
         return FileStorage.__objects
@@ -42,12 +61,7 @@ class FileStorage:
         try:
             with open(self.__file_path, 'r') as file:
                 data = json.load(file)
-            for key, obj_data in data.items():
-                class_name, obj_id = key.split('.')
-                # Dynamically import the class with the correct module name
-                module = importlib.import_module("models." + class_name)
-                class_ = getattr(module, class_name)
-                new_instance = class_(**obj_data)
-                self.__objects[key] = new_instance
+            for key, obj in data.items():
+                self.__objects[key] = self.classes()[obj["__class__"]](**obj)
         except FileNotFoundError:
             pass

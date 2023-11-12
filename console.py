@@ -51,13 +51,13 @@ class HBNBCommand(cmd.Cmd):
         """
         if not arg:
             print("** class name missing **")
-            return
-        class_name = arg
-        if self.check_valid_class(class_name):
-            new_instance = eval(class_name)()
-            new_instance.save()
-            print(new_instance.id)
-
+        else:
+            try:
+                new_instance = eval(arg)()
+                new_instance.save()
+                print(new_instance.id)
+            except NameError:
+                print("** class doesn't exist **")
 
     def do_show(self, arg):
         """
